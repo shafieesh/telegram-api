@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+group 'com.chainedminds.telegram.api'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    implementation 'com.chainedminds:sharedfeatures:1.4.0'
+}
