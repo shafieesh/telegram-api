@@ -28,9 +28,9 @@ public class _TelegramData {
 
     public static class ClientData {
 
-        public static String appName = "TelegramAPI";
-        public String platform = "API";
-        public String version = "1.0.0";
+        public static String appName = "API";
+        public final String platform = "API";
+        public final String version = "1.0.0";
         public static String language = "en";
     }
 }
