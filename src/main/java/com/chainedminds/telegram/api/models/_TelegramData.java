@@ -5,6 +5,11 @@ import java.util.List;
 
 public class _TelegramData {
 
+    public static int accountID;
+    public static String accountCredential;
+    public static String clientAppName = "API";
+    public static String clientLanguage = "en";
+
     public final AccountData account = new AccountData();
     public final ClientData client = new ClientData();
 
@@ -22,15 +27,17 @@ public class _TelegramData {
 
     public static class AccountData {
 
-        public static int id = Integer.parseInt(DynamicConfig.getMap("API-Telegram-ID"));
-        public static String credential = DynamicConfig.getMap("API-Telegram-Credential");
+        public static int id = accountID;
+        public static String credential = accountCredential;
+        public String username;
+        public String password;
     }
 
     public static class ClientData {
 
-        public static String appName = "API";
+        public static String appName = clientAppName;
         public final String platform = "API";
         public final String version = "1.0.0";
-        public static String language = "en";
+        public static String language = clientLanguage;
     }
 }

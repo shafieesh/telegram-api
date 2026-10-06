@@ -38,10 +38,10 @@ public class _TelegramAPI extends _API {
 
     public static void config(int id, String credential, String appName, String language) {
 
-        _TelegramData.AccountData.id = id;
-        _TelegramData.AccountData.credential = credential;
-        _TelegramData.ClientData.appName = appName;
-        _TelegramData.ClientData.language = language;
+        _TelegramData.accountID = id;
+        _TelegramData.accountCredential = credential;
+        _TelegramData.clientAppName = appName;
+        _TelegramData.clientLanguage = language;
     }
 
     public void call(_TelegramData request, boolean async, ApiCallback callback) {
