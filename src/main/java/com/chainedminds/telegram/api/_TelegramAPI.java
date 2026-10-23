@@ -5,13 +5,15 @@ import com.chainedminds.api._API;
 import com.chainedminds.models._FileData;
 import com.chainedminds.telegram.api.models._TelegramData;
 import com.chainedminds.utilities.SocketPool;
+import com.chainedminds.utilities._Log;
 import com.chainedminds.utilities.json.Json;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
 import java.io.File;
-import java.net.Socket;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,7 @@ public class _TelegramAPI extends _API {
 
     public static _TelegramAPI INSTANCE;
     public static final SocketPool MESSAGE_POOL = new SocketPool("engine-telegram.chainedminds.com", 4495, 1);
-    public static final SocketPool FILE_POOL = new SocketPool("engine-telegram.chainedminds.com", 4495, 1);
+    public static final SocketPool FILE_POOL = new SocketPool("engine-telegram.chainedminds.com", 4496, 1);
     public static final ExecutorService ASYNC_POOL_EXECUTOR = Executors.newCachedThreadPool();
 
     public static synchronized _TelegramAPI get() {
@@ -118,45 +120,51 @@ public class _TelegramAPI extends _API {
         }
     }
 
-    public static boolean upload(File file) {
+    public boolean upload(File file) {
 
-        AtomicBoolean wasSuccessful = new AtomicBoolean(false);
+        String fileName = file.getName();
+        long fileSize = file.length();
 
-        RequestBody fileBody = RequestBody.create(file, MediaType.parse("application/octet-stream"));
+        _TelegramData request = new _TelegramData();
+        request.request = 1008;
+        request.file = new _FileData();
+        request.file.path = "upload-telegram.chainedminds";
+        request.file.name = fileName;
 
-        Request.Builder builder = new Request.Builder();
-        builder.url("https://upload-telegram.chainedminds.com/" + file.getName());
-        builder.post(fileBody);
+        byte[] requestBytes = Json.getBytes(request);
+        byte[] responseBytes = null;
 
-        _API.instance().call(builder, false, new ApiCallback() {
-            @Override
-            public void onError(String error, String message) {
+        try (InputStream inputStream = new FileInputStream(file)) {
 
-                System.err.println("TelegramAPI upload " + error + " : " + message);
-            }
+            responseBytes = SocketPool.transfer(FILE_POOL, requestBytes, inputStream, fileSize, null);
 
-            @Override
-            public void onResponse(int code, Map<String, List<String>> headers, String response) {
+        } catch (Exception e) {
 
-                if (code != 200) {
+            _Log.error("TelegramAPI-Upload", e);
+        }
 
-                    throw new RuntimeException("Response code : " + code);
-                }
+        if (responseBytes != null) {
 
-                _TelegramData responseData = Json.getObject(response, _TelegramData.class);
+            _TelegramData response = Json.getObject(responseBytes, _TelegramData.class);
 
-                if (responseData != null && responseData.response == _Codes.RESPONSE_OK) {
+            if (response != null) {
 
-                    wasSuccessful.set(true);
+                if (response.response == _Codes.RESPONSE_OK) {
+
+                    return true;
 
                 } else {
 
-                    throw new RuntimeException("Response  : " + response);
+                    _Log.error("TelegramAPI-Upload", "API : " + new String(responseBytes));
                 }
-            }
-        });
 
-        return wasSuccessful.get();
+            } else {
+
+                _Log.error("TelegramAPI-Upload", "API : no response");
+            }
+        }
+
+        return false;
     }
 
     public void sendMessage(long chatID, String message) {
@@ -209,8 +217,6 @@ public class _TelegramAPI extends _API {
         requestData.chatID = chatID;
         requestData.messages = messages;
         requestData.files = fileDataList;
-
-        Socket socket = FILE_POOL.connect();
 
         call(requestData, true, new ApiCallback() {
             @Override

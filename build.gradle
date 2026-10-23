@@ -10,7 +10,7 @@ java {
 }
 
 group 'com.chainedminds.telegram.api'
-version = '1.0.3'
+version = '1.0.4'
 
 repositories {
     mavenCentral()
@@ -20,5 +20,5 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.chainedminds:sharedfeatures:1.4.0'
+    implementation 'com.chainedminds:sharedfeatures:1.4.5'
 }
