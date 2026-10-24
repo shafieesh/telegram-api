@@ -27,17 +27,17 @@ public class _TelegramData {
 
     public static class AccountData {
 
-        public static int id = accountID;
-        public static String credential = accountCredential;
+        public int id = accountID;
+        public String credential = accountCredential;
         public String username;
         public String password;
     }
 
     public static class ClientData {
 
-        public static String appName = clientAppName;
-        public final String platform = "API";
-        public final String version = "1.0.0";
-        public static String language = clientLanguage;
+        public String appName = clientAppName;
+        public String platform = "API";
+        public String version = "1.0.0";
+        public String language = clientLanguage;
     }
 }
