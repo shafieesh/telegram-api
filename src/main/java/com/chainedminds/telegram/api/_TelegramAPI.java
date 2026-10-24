@@ -25,7 +25,7 @@ public class _TelegramAPI extends _API {
 
     public static _TelegramAPI INSTANCE;
     public static final SocketPool MESSAGE_POOL = new SocketPool("engine-telegram.chainedminds.com", 4495, 1);
-    public static final SocketPool FILE_POOL = new SocketPool("engine-telegram.chainedminds.com", 4496, 1);
+    public static final SocketPool FILE_POOL = new SocketPool("engine-telegram.chainedminds.com", 81, 1);
     public static final ExecutorService ASYNC_POOL_EXECUTOR = Executors.newCachedThreadPool();
 
     public static synchronized _TelegramAPI get() {
