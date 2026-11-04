@@ -10,8 +10,8 @@ public class _TelegramData {
     public static String clientAppName = "API";
     public static String clientLanguage = "en";
 
-    public final AccountData account = new AccountData();
-    public final ClientData client = new ClientData();
+    public AccountData account = new AccountData();
+    public ClientData client = new ClientData();
 
     public int request;
     public Integer subRequest;
