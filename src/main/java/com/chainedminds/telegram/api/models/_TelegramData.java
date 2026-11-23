@@ -25,6 +25,12 @@ public class _TelegramData {
     public _FileData file;
     public List<_FileData> files;
 
+    //--Sepehr-Test
+
+    public String bot;
+
+    //--Sepehr-Test
+
     public static class AccountData {
 
         public int id = accountID;

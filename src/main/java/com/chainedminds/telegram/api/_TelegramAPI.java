@@ -246,4 +246,90 @@ public class _TelegramAPI extends _API {
             }
         });
     }
+
+
+    //--------------------------------------------------------------------------------------
+
+    public void sendMessage(String bot, long chatID, String message) {
+
+        sendMessage(bot, chatID, List.of(message), null);
+    }
+
+    public void sendMessage(String bot, long chatID, File file) {
+
+        sendMessage(bot, chatID, (List<String>) null, List.of(file));
+    }
+
+    public void sendMessage(String bot, long chatID, String message, File file) {
+
+        sendMessage(bot, chatID, List.of(message), List.of(file));
+    }
+
+    public void sendMessage(String bot, long chatID, String message, List<File> files) {
+
+        sendMessage(bot, chatID, List.of(message), files);
+    }
+
+    public void sendMessage(String bot, long chatID, List<String> messages, List<File> files) {
+
+        List<_FileData> fileDataList = null;
+
+        if (files != null) {
+
+            fileDataList = new ArrayList<>();
+
+            for (File file : files) {
+
+                if (upload(file)) {
+
+                    _FileData fileData = new _FileData();
+                    fileData.name = file.getName();
+
+                    fileDataList.add(fileData);
+
+                } else {
+
+                    return;
+                }
+            }
+        }
+
+        _TelegramData requestData = new _TelegramData();
+        requestData.request = 1009;
+        requestData.subRequest = 2000;
+        requestData.chatID = chatID;
+        requestData.messages = messages;
+        requestData.files = fileDataList;
+        requestData.bot = bot;
+
+        call(requestData, true, new ApiCallback() {
+            @Override
+            public void onError(String error, String message) {
+
+                System.err.println("TelegramAPI sendMessage " + error + " : " + message);
+            }
+
+            @Override
+            public void onResponse(int code, String response) {
+
+                if (code != 200) {
+
+                    throw new RuntimeException("Response code : " + code);
+                }
+
+                _TelegramData responseData = Json.getObject(response, _TelegramData.class);
+
+                if (responseData != null && responseData.response == _Codes.RESPONSE_OK) {
+
+                    //System.out.println(responseData.response);
+
+                } else {
+
+                    throw new RuntimeException("Response  : " + response);
+                }
+            }
+        });
+    }
+
+    //--------------------------------------------------------------------------------------
 }
